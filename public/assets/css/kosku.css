@@ -1,0 +1,429 @@
+/* kosKu Design System — Monochrome Glassmorphism (PRD Compliant) */
+:root {
+  --kosku-black: #121214;
+  --kosku-dark: #18181b;
+  --kosku-dark-muted: #27272a;
+  --kosku-gray-50: #fafafa;
+  --kosku-gray-100: #f4f4f5;
+  --kosku-gray-200: #e4e4e7;
+  --kosku-gray-300: #d4d4d8;
+  --kosku-gray-400: #a1a1aa;
+  --kosku-gray-500: #71717a;
+  --kosku-gray-600: #52525b;
+  --kosku-gray-800: #27272a;
+  --kosku-gray-900: #18181b;
+  --kosku-white: #ffffff;
+  
+  --kosku-radius-xl: 28px;
+  --kosku-radius-lg: 22px;
+  --kosku-radius-md: 16px;
+  --kosku-radius-sm: 10px;
+  --kosku-radius-pill: 9999px;
+
+  --kosku-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --kosku-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
+  --kosku-shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.09);
+  --kosku-shadow-dark: 0 16px 36px rgba(0, 0, 0, 0.28);
+
+  --kosku-glass-bg: rgba(255, 255, 255, 0.88);
+  --kosku-glass-border: rgba(255, 255, 255, 0.7);
+  --kosku-glass-blur: blur(20px);
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--kosku-gray-100);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(255, 255, 255, 0.9) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(228, 228, 231, 0.6) 0px, transparent 50%);
+  color: var(--kosku-dark);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Glassmorphism Containers & Cards */
+.kosku-glass {
+  background: var(--kosku-glass-bg);
+  backdrop-filter: var(--kosku-glass-blur);
+  -webkit-backdrop-filter: var(--kosku-glass-blur);
+  border: 1px solid var(--kosku-glass-border);
+  box-shadow: var(--kosku-shadow-md);
+}
+
+.card-kosku {
+  background: var(--kosku-white);
+  border-radius: var(--kosku-radius-lg);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: var(--kosku-shadow-sm);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-kosku:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--kosku-shadow-md);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.card-kosku-dark {
+  background: var(--kosku-black);
+  color: var(--kosku-white);
+  border-radius: var(--kosku-radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--kosku-shadow-dark);
+}
+
+.card-kosku-dashed {
+  background: rgba(255, 255, 255, 0.4);
+  border: 2px dashed var(--kosku-gray-300);
+  border-radius: var(--kosku-radius-lg);
+  transition: all 0.2s ease;
+}
+
+.card-kosku-dashed:hover {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: var(--kosku-dark);
+}
+
+/* Rounded Pill Elements */
+.rounded-kosku {
+  border-radius: var(--kosku-radius-lg) !important;
+}
+
+.rounded-kosku-xl {
+  border-radius: var(--kosku-radius-xl) !important;
+}
+
+.btn-pill {
+  border-radius: var(--kosku-radius-pill) !important;
+  padding: 10px 24px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-kosku-dark {
+  background-color: var(--kosku-dark);
+  color: var(--kosku-white);
+  border: 1px solid var(--kosku-dark);
+}
+
+.btn-kosku-dark:hover, .btn-kosku-dark:focus {
+  background-color: #000000;
+  color: var(--kosku-white);
+  transform: scale(1.02);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.btn-kosku-light {
+  background-color: var(--kosku-white);
+  color: var(--kosku-dark);
+  border: 1px solid var(--kosku-gray-300);
+}
+
+.btn-kosku-light:hover, .btn-kosku-light:focus {
+  background-color: var(--kosku-gray-50);
+  color: var(--kosku-black);
+  border-color: var(--kosku-dark);
+}
+
+.btn-icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50% !important;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--kosku-white);
+  border: 1px solid var(--kosku-gray-200);
+  color: var(--kosku-dark);
+  transition: all 0.2s ease;
+}
+
+.btn-icon-circle:hover {
+  background: var(--kosku-gray-100);
+  color: #000;
+  transform: translateY(-2px);
+}
+
+.btn-icon-circle-dark {
+  background: var(--kosku-dark);
+  color: var(--kosku-white);
+  border: none;
+}
+
+.btn-icon-circle-dark:hover {
+  background: #000;
+  color: var(--kosku-white);
+}
+
+/* Custom Chips & Filters */
+.chip-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 18px;
+  border-radius: var(--kosku-radius-pill);
+  background: var(--kosku-white);
+  border: 1px solid var(--kosku-gray-300);
+  color: var(--kosku-gray-600);
+  font-weight: 500;
+  font-size: 0.88rem;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.chip-filter:hover {
+  border-color: var(--kosku-dark);
+  color: var(--kosku-dark);
+}
+
+.chip-filter.active {
+  background: var(--kosku-dark);
+  color: var(--kosku-white);
+  border-color: var(--kosku-dark);
+}
+
+/* Badges */
+.badge-kosku {
+  padding: 5px 12px;
+  border-radius: var(--kosku-radius-pill);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.badge-kosku-dark {
+  background: var(--kosku-dark);
+  color: var(--kosku-white);
+}
+
+.badge-kosku-light {
+  background: var(--kosku-gray-100);
+  color: var(--kosku-gray-800);
+  border: 1px solid var(--kosku-gray-300);
+}
+
+.badge-kosku-outline {
+  background: transparent;
+  color: var(--kosku-dark);
+  border: 1px solid var(--kosku-dark);
+}
+
+.badge-available {
+  background: rgba(34, 197, 94, 0.12);
+  color: #15803d;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.badge-full {
+  background: rgba(239, 68, 68, 0.12);
+  color: #b91c1c;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Grayscale Architectural Map Tiles */
+.leaflet-container {
+  background: #eaeaea !important;
+  font-family: inherit !important;
+}
+
+.leaflet-tile {
+  filter: grayscale(100%) contrast(106%) brightness(96%) !important;
+}
+
+/* Custom Leaflet Markers */
+.custom-kosku-marker {
+  position: relative;
+  background: var(--kosku-dark);
+  color: var(--kosku-white);
+  border-radius: var(--kosku-radius-pill);
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  border: 2px solid var(--kosku-white);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.custom-kosku-marker::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid var(--kosku-dark);
+}
+
+.custom-kosku-marker:hover, .custom-kosku-marker.active {
+  background: #000;
+  transform: translateY(-4px) scale(1.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  z-index: 9999 !important;
+}
+
+.custom-kosku-marker.active {
+  border-color: #ffffff;
+  outline: 3px solid rgba(0, 0, 0, 0.2);
+}
+
+.custom-kosku-marker .type-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+}
+
+/* Leaflet Popups */
+.leaflet-popup-content-wrapper {
+  border-radius: var(--kosku-radius-lg) !important;
+  padding: 0 !important;
+  overflow: hidden;
+  box-shadow: var(--kosku-shadow-lg) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  line-height: normal !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--kosku-white) !important;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--kosku-gray-300);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--kosku-gray-500);
+}
+
+/* Layout for Explorer */
+.explorer-container {
+  height: calc(100vh - 74px);
+  overflow: hidden;
+}
+
+.explorer-sidebar {
+  height: 100%;
+  overflow-y: auto;
+  border-right: 1px solid var(--kosku-gray-200);
+}
+
+.explorer-map-wrapper {
+  height: 100%;
+  position: relative;
+}
+
+/* Floating Compare Bar */
+.compare-floating-bar {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1050;
+  background: var(--kosku-dark);
+  color: var(--kosku-white);
+  padding: 12px 24px;
+  border-radius: var(--kosku-radius-pill);
+  box-shadow: var(--kosku-shadow-dark);
+  display: none;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Admin Sidebar */
+.admin-sidebar {
+  width: 270px;
+  background: var(--kosku-white);
+  border-radius: var(--kosku-radius-xl);
+  border: 1px solid var(--kosku-gray-200);
+  box-shadow: var(--kosku-shadow-sm);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  border-radius: var(--kosku-radius-pill);
+  color: var(--kosku-gray-600);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.94rem;
+  transition: all 0.2s ease;
+  margin-bottom: 4px;
+}
+
+.admin-nav-item:hover {
+  background: var(--kosku-gray-100);
+  color: var(--kosku-dark);
+}
+
+.admin-nav-item.active {
+  background: var(--kosku-dark);
+  color: var(--kosku-white);
+  font-weight: 600;
+}
+
+.admin-nav-item i {
+  font-size: 1.15rem;
+}
+
+/* Progress Ring Graphic */
+.progress-ring-circle {
+  transition: stroke-dashoffset 0.35s;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 991.98px) {
+  .explorer-container {
+    height: auto;
+    position: relative;
+  }
+  .explorer-map-wrapper {
+    height: 60vh;
+  }
+  .explorer-sidebar {
+    height: auto;
+    border-right: none;
+  }
+}
