@@ -2,13 +2,13 @@
 
 <?= $this->section('content') ?>
 
-<div class="card card-kosku p-4 mb-5">
-  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+<div class="card-coach mb-5">
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom" style="border-color: rgba(226, 232, 240, 0.7) !important;">
     <div>
       <h4 class="fw-800 text-dark mb-1">Tambah Kos Baru</h4>
       <p class="text-muted small mb-0">Isi data lengkap kos dan tentukan titik koordinat langsung dari peta.</p>
     </div>
-    <a href="<?= base_url('admin/kos') ?>" class="btn btn-sm btn-kosku-light btn-pill">
+    <a href="<?= base_url('admin/kos') ?>" class="btn btn-sm btn-coach-light btn-pill">
       <i class="bi bi-arrow-left me-1"></i> Kembali ke Daftar
     </a>
   </div>
@@ -59,7 +59,7 @@
             <label class="form-label small fw-bold text-dark text-uppercase mb-0">
               <i class="bi bi-geo-alt-fill text-danger me-1"></i> Titik Koordinat Peta (Klik atau Geser Marker)
             </label>
-            <span class="badge badge-kosku badge-kosku-dark" style="font-size: 10px;">Interaktif</span>
+            <span class="badge badge-coach badge-coach-teal" style="font-size: 10px;">Interaktif</span>
           </div>
 
           <div id="pickerMap" class="rounded-4 border mb-2" style="height: 280px; width: 100%;"></div>
@@ -163,8 +163,9 @@
         <!-- Photos Upload -->
         <div class="card p-3 rounded-4 bg-light mb-4 border">
           <h6 class="fw-bold text-dark mb-2">Unggah Foto Galeri</h6>
-          <input type="file" name="foto[]" class="form-control rounded-pill bg-white" multiple accept="image/*">
-          <div class="form-text small">Pilih 1 atau lebih foto (JPG, PNG, WEBP). Foto pertama akan menjadi foto utama.</div>
+          <input type="file" name="foto[]" id="kosPhotosInput" class="form-control bg-white" multiple accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+          <div class="form-text small">Opsional. Pilih hingga 10 foto JPG, PNG, atau WEBP (maksimal 5 MB per foto). Foto pertama menjadi foto utama.</div>
+          <div id="kosPhotosPreview" class="row g-2 mt-1"></div>
         </div>
 
         <!-- Status Publikasi -->
@@ -185,7 +186,7 @@
 
         <!-- Submit Button -->
         <div class="d-grid gap-2">
-          <button type="submit" class="btn btn-kosku-dark btn-pill py-3 fw-bold fs-6">
+          <button type="submit" class="btn btn-coach-teal btn-pill py-3 fw-bold fs-6">
             <i class="bi bi-check-lg me-1"></i> Simpan Data Kos
           </button>
         </div>
@@ -201,6 +202,32 @@
 <?= $this->section('scripts') ?>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+    const photosInput = document.getElementById('kosPhotosInput');
+    const photosPreview = document.getElementById('kosPhotosPreview');
+
+    photosInput.addEventListener('change', function () {
+      photosPreview.replaceChildren();
+
+      Array.from(this.files).forEach(function (file) {
+        const column = document.createElement('div');
+        column.className = 'col-4';
+
+        const image = document.createElement('img');
+        image.src = URL.createObjectURL(file);
+        image.alt = file.name;
+        image.className = 'img-fluid rounded-3 border';
+        image.style.height = '88px';
+        image.style.width = '100%';
+        image.style.objectFit = 'cover';
+        image.onload = function () {
+          URL.revokeObjectURL(image.src);
+        };
+
+        column.appendChild(image);
+        photosPreview.appendChild(column);
+      });
+    });
+
     const latInput = document.getElementById('inputLat');
     const lngInput = document.getElementById('inputLng');
     const wilayahSelect = document.getElementById('wilayahSelectAdmin');

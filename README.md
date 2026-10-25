@@ -2,8 +2,6 @@
 
 > **Tagline:** *Cari kos, langsung dari peta.*
 
-![kosKu Screenshot Preview](public/uploads/kos/sample_kos_1.svg)
-
 **kosKu** adalah platform website pencarian kos interaktif berbasis peta digital spasial. Pengguna dapat memilih wilayah, melihat sebaran kos di peta secara visual dan akurat, menerapkan filter rentang harga dan fasilitas, melihat detail kamar serta langsung menghubungi pemilik kos melalui WhatsApp dengan pesan otomatis terformat.
 
 Proyek ini dibangun berdasarkan dokumen **Product Requirement Document (PRD) kosKu v1.0** dengan pendekatan desain *Monochrome Glassmorphic* (sudut membulat 20–28px, palet hitam pekat, putih, dan abu-abu lembut, serta peta OpenStreetMap berfilter arsitektural monokrom).

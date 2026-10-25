@@ -361,24 +361,6 @@ class KosKuSeeder extends Seeder
                     ]);
                 }
 
-                // Attach Photos
-                $photoPaths = [
-                    'uploads/kos/sample_kos_1.svg',
-                    'uploads/kos/sample_kos_2.svg',
-                    'uploads/kos/sample_kos_3.svg',
-                ];
-
-                foreach ($photoPaths as $pIndex => $pPath) {
-                    $db->table('kos_foto')->insert([
-                        'kos_id'     => $kosId,
-                        'path_file'  => $pPath,
-                        'keterangan' => ($pIndex === 0) ? 'Tampak Depan & Kamar' : 'Fasilitas & Kamar Mandi',
-                        'is_utama'   => ($pIndex === 0),
-                        'urutan'     => $pIndex,
-                        'created_at' => date('Y-m-d H:i:s'),
-                    ]);
-                }
-
                 // Add sample visits
                 $db->table('kos_kunjungan')->insert([
                     'kos_id'     => $kosId,

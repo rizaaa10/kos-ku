@@ -7,7 +7,7 @@
     <div class="col-12 col-lg-8">
       
       <div class="text-center mb-5">
-        <span class="badge badge-kosku badge-kosku-dark px-3 py-2 text-uppercase mb-3">Kontak &amp; Dukungan</span>
+        <span class="badge badge-coach badge-coach-teal px-3 py-2 text-uppercase mb-3">Kontak &amp; Dukungan</span>
         <h1 class="fw-800 text-dark display-6 tracking-tight mb-2">Bantuan &amp; Pelaporan Data</h1>
         <p class="text-muted">Punya pertanyaan, koreksi data, atau ingin mendaftarkan kos Anda?</p>
       </div>

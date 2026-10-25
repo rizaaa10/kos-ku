@@ -20,11 +20,15 @@
       
       <!-- Photo Gallery Section -->
       <div class="card-kosku overflow-hidden mb-4 p-2 bg-white">
-        <?php 
-          $mainPhoto = !empty($kos['fotos']) ? $kos['fotos'][0]['path_file'] : 'uploads/kos/sample_kos_1.svg';
-        ?>
         <div class="position-relative mb-2">
-          <img id="mainGalleryImg" src="<?= base_url($mainPhoto) ?>" class="img-fluid w-100 rounded-kosku" style="height: 420px; object-fit: cover;" alt="<?= esc($kos['nama']) ?>">
+          <?php if (!empty($kos['fotos'])): ?>
+            <img id="mainGalleryImg" src="<?= base_url($kos['fotos'][0]['path_file']) ?>" class="img-fluid w-100 rounded-kosku" style="height: 420px; object-fit: cover;" alt="<?= esc($kos['nama']) ?>">
+          <?php else: ?>
+            <div class="w-100 rounded-kosku bg-light d-flex flex-column align-items-center justify-content-center text-muted" style="height: 420px;">
+              <i class="bi bi-image fs-1 mb-2"></i>
+              <span>Foto kos belum tersedia</span>
+            </div>
+          <?php endif; ?>
           
           <span class="position-absolute top-0 start-0 m-3 badge badge-kosku badge-kosku-dark text-capitalize fs-6 px-3 py-2">
             Kos <?= esc($kos['tipe']) ?>
@@ -241,7 +245,13 @@
         <?php foreach ($relatedKos as $rk): ?>
           <div class="col-12 col-md-4">
             <div class="card card-kosku h-100 overflow-hidden">
-              <img src="<?= base_url($rk['foto_utama'] ? $rk['foto_utama']['path_file'] : 'uploads/kos/sample_kos_1.svg') ?>" class="card-img-top" style="height: 180px; object-fit: cover;" alt="<?= esc($rk['nama']) ?>">
+              <?php if (!empty($rk['foto_utama'])): ?>
+                <img src="<?= base_url($rk['foto_utama']['path_file']) ?>" class="card-img-top" style="height: 180px; object-fit: cover;" alt="<?= esc($rk['nama']) ?>">
+              <?php else: ?>
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center text-muted" style="height: 180px;">
+                  <i class="bi bi-image fs-1" aria-label="Foto kos belum tersedia"></i>
+                </div>
+              <?php endif; ?>
               <div class="card-body p-3">
                 <div class="d-flex justify-content-between align-items-center mb-1">
                   <span class="badge badge-kosku badge-kosku-dark text-capitalize" style="font-size: 10px;">Kos <?= esc($rk['tipe']) ?></span>

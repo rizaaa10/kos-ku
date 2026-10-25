@@ -7,6 +7,7 @@ const KosKu = {
   map: null,
   markersLayer: null,
   geojsonLayer: null,
+  mapResizeObserver: null,
   kosData: [],
   activeMarkerId: null,
   userLocationMarker: null,
@@ -57,6 +58,16 @@ const KosKu = {
     }).addTo(this.map);
 
     this.markersLayer = L.layerGroup().addTo(this.map);
+
+    const refreshMapSize = () => this.map.invalidateSize({ pan: false });
+    requestAnimationFrame(refreshMapSize);
+
+    if ('ResizeObserver' in window) {
+      this.mapResizeObserver = new ResizeObserver(refreshMapSize);
+      this.mapResizeObserver.observe(mapElement.parentElement);
+    } else {
+      window.addEventListener('resize', refreshMapSize);
+    }
   },
 
   loadFavorites: function () {
@@ -218,10 +229,10 @@ const KosKu = {
     selectedKos.forEach(k => {
       const waMsg = encodeURIComponent(`Halo ${k.kontak_nama}, saya ingin bertanya tentang kamar kos ${k.nama} di kosKu.`);
       html += `<td class="text-center">
-        <a href="https://wa.me/${k.kontak_wa}?text=${waMsg}" target="_blank" class="btn btn-sm btn-kosku-dark btn-pill mb-1 w-100" onclick="KosKu.track(${k.id}, 'klik_wa')">
+        <a href="https://wa.me/${k.kontak_wa}?text=${waMsg}" target="_blank" class="btn btn-sm btn-coach-teal btn-pill mb-1 w-100" onclick="KosKu.track(${k.id}, 'klik_wa')">
           <i class="bi bi-whatsapp"></i> Chat WhatsApp
         </a>
-        <a href="/kos/${k.slug}" class="btn btn-sm btn-kosku-light btn-pill w-100">
+        <a href="/kos/${k.slug}" class="btn btn-sm btn-coach-light btn-pill w-100">
           Lihat Detail
         </a>
       </td>`;
@@ -247,12 +258,12 @@ const KosKu = {
 
     if (kosArray.length === 0) {
       listContainer.innerHTML = `
-        <div class="card-kosku p-5 text-center my-4">
+        <div class="card-coach p-5 text-center my-4">
           <div class="mb-3 text-secondary"><i class="bi bi-geo-alt fs-1"></i></div>
           <h5 class="fw-bold text-dark">Belum ada kos di wilayah ini</h5>
           <p class="text-muted small mb-3">Coba ubah filter pencarian atau pilih wilayah terdekat lainnya.</p>
           <div>
-            <button class="btn btn-kosku-dark btn-pill" onclick="KosKu.resetFilters()">
+            <button class="btn btn-coach-teal btn-pill" onclick="KosKu.resetFilters()">
               <i class="bi bi-arrow-counterclockwise"></i> Reset Semua Filter
             </button>
           </div>
@@ -267,7 +278,9 @@ const KosKu = {
     kosArray.forEach(kos => {
       const isFav = this.favorites.includes(parseInt(kos.id));
       const isAvailable = kos.status_ketersediaan === 'tersedia' && parseInt(kos.kamar_tersedia) > 0;
-      const thumb = kos.foto_utama ? `/${kos.foto_utama.path_file}` : '/uploads/kos/sample_kos_1.svg';
+      const photoPath = kos.foto_utama && !kos.foto_utama.path_file.includes('sample_kos_')
+        ? `/${kos.foto_utama.path_file}`
+        : null;
       const formattedPrice = this.formatRupiah(kos.harga_min);
 
       // Add Leaflet Marker
@@ -293,17 +306,19 @@ const KosKu = {
         });
 
         const popupHtml = `
-          <div style="width: 250px;">
-            <img src="${thumb}" style="width: 100%; height: 130px; object-fit: cover;" alt="${this.escapeHtml(kos.nama)}">
-            <div style="padding: 12px;">
+          <div style="width: 250px; border-radius: 18px; overflow: hidden;">
+            ${photoPath
+              ? `<img src="${photoPath}" style="width: 100%; height: 130px; object-fit: cover;" alt="${this.escapeHtml(kos.nama)}">`
+              : `<div style="height: 130px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #94a3b8;"><i class="bi bi-image" style="font-size: 32px;" aria-label="Foto kos belum tersedia"></i></div>`}
+            <div style="padding: 12px; background: #ffffff;">
               <div class="d-flex justify-content-between align-items-center mb-1">
-                <span class="badge badge-kosku badge-kosku-dark text-capitalize">${kos.tipe}</span>
+                <span class="badge badge-coach badge-coach-teal text-capitalize">${kos.tipe}</span>
                 <span class="small fw-bold text-muted">${kos.nama_wilayah || ''}</span>
               </div>
               <h6 class="fw-bold mb-1 text-truncate" title="${this.escapeHtml(kos.nama)}">${this.escapeHtml(kos.nama)}</h6>
               <div class="fw-bold fs-6 text-dark mb-2">${formattedPrice} <span class="text-muted fw-normal" style="font-size: 11px;">/bln</span></div>
               <div class="d-flex gap-2">
-                <a href="/kos/${kos.slug}" class="btn btn-sm btn-kosku-dark btn-pill w-100" style="font-size: 11px;">Lihat Detail</a>
+                <a href="/kos/${kos.slug}" class="btn btn-sm btn-coach-teal btn-pill w-100" style="font-size: 11px;">Lihat Detail</a>
               </div>
             </div>
           </div>
@@ -325,19 +340,21 @@ const KosKu = {
       let fasPills = '';
       if (kos.fasilitas && kos.fasilitas.length > 0) {
         kos.fasilitas.slice(0, 3).forEach(f => {
-          fasPills += `<span class="badge badge-kosku badge-kosku-light me-1"><i class="bi ${f.ikon || 'bi-check'}"></i> ${this.escapeHtml(f.nama)}</span>`;
+          fasPills += `<span class="badge badge-coach me-1" style="background: rgba(241, 245, 249, 0.9); color: #475569;"><i class="bi ${f.ikon || 'bi-check'}"></i> ${this.escapeHtml(f.nama)}</span>`;
         });
       }
 
       // Render Card
       cardsHtml += `
-        <div class="card card-kosku mb-3 position-relative overflow-hidden" id="kos-card-${kos.id}" 
+        <div class="card card-coach mb-3 position-relative overflow-hidden p-2" id="kos-card-${kos.id}"
              onmouseenter="KosKu.highlightMarker(${kos.id})" 
              onclick="KosKu.flyToKos(${kos.id}, ${lat}, ${lng})">
-          <div class="row g-0">
+          <div class="row g-0 align-items-center">
             <div class="col-4 col-sm-4 position-relative">
-              <img src="${thumb}" class="img-fluid h-100 w-100 rounded-start-4" style="object-fit: cover; min-height: 140px;" alt="${this.escapeHtml(kos.nama)}">
-              <span class="position-absolute top-0 start-0 m-2 badge badge-kosku badge-kosku-dark text-capitalize" style="font-size: 10px;">
+              ${photoPath
+                ? `<img src="${photoPath}" class="img-fluid h-100 w-100 rounded-4" style="object-fit: cover; min-height: 140px; max-height: 150px;" alt="${this.escapeHtml(kos.nama)}">`
+                : `<div class="rounded-4 bg-light d-flex align-items-center justify-content-center text-muted" style="height: 140px;"><i class="bi bi-image fs-2" aria-label="Foto kos belum tersedia"></i></div>`}
+              <span class="position-absolute top-0 start-0 m-2 badge badge-coach badge-coach-teal text-capitalize" style="font-size: 10px;">
                 ${kos.tipe}
               </span>
             </div>
@@ -345,32 +362,32 @@ const KosKu = {
               <div class="card-body p-3">
                 <div class="d-flex justify-content-between align-items-start">
                   <div>
-                    <span class="small text-muted fw-medium">${this.escapeHtml(kos.nama_wilayah || 'Wilayah')}</span>
+                    <span class="small text-muted fw-semibold" style="font-size: 11px;">${this.escapeHtml(kos.nama_wilayah || 'Wilayah')}</span>
                     <h6 class="card-title fw-bold text-dark mb-1 text-truncate" style="max-width: 190px;" title="${this.escapeHtml(kos.nama)}">
-                      <a href="/kos/${kos.slug}" class="text-decoration-none text-dark hover-underline">${this.escapeHtml(kos.nama)}</a>
+                      <a href="/kos/${kos.slug}" class="text-decoration-none text-dark hover-teal">${this.escapeHtml(kos.nama)}</a>
                     </h6>
                   </div>
-                  <button type="button" class="btn btn-sm btn-icon-circle border-0 p-0" style="width: 32px; height: 32px;" onclick="event.stopPropagation(); KosKu.toggleFavorite(${kos.id}, this)">
+                  <button type="button" class="topbar-btn border-0 p-0" style="width: 32px; height: 32px;" onclick="event.stopPropagation(); KosKu.toggleFavorite(${kos.id}, this)">
                     <i class="bi ${isFav ? 'bi-heart-fill text-danger' : 'bi-heart text-secondary'} fs-6"></i>
                   </button>
                 </div>
 
                 <div class="my-1">
-                  <span class="fs-6 fw-bold text-dark">${formattedPrice}</span>
+                  <span class="fs-6 fw-800 text-dark">${formattedPrice}</span>
                   <span class="text-muted small">/bln</span>
-                  ${isAvailable ? `<span class="badge badge-available ms-2" style="font-size: 10px;">Tersedia</span>` : `<span class="badge badge-full ms-2" style="font-size: 10px;">Penuh</span>`}
+                  ${isAvailable ? `<span class="badge badge-coach badge-coach-available ms-2" style="font-size: 10px;">Tersedia</span>` : `<span class="badge badge-coach badge-coach-full ms-2" style="font-size: 10px;">Penuh</span>`}
                 </div>
 
                 <div class="text-truncate mb-2" style="font-size: 11px;">
                   ${fasPills}
                 </div>
 
-                <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                <div class="d-flex justify-content-between align-items-center pt-2 border-top" style="border-color: rgba(226, 232, 240, 0.7) !important;">
                   <div class="form-check form-check-inline m-0" onclick="event.stopPropagation();">
                     <input class="form-check-input compare-check-input" type="checkbox" id="chk-cmp-${kos.id}" data-kos-id="${kos.id}" onchange="KosKu.toggleCompare(${kos.id})" ${this.compareList.includes(parseInt(kos.id)) ? 'checked' : ''}>
                     <label class="form-check-label text-muted" for="chk-cmp-${kos.id}" style="font-size: 11px;">Bandingkan</label>
                   </div>
-                  <a href="/kos/${kos.slug}" class="btn btn-sm btn-kosku-dark btn-pill px-3 py-1" style="font-size: 11px;" onclick="event.stopPropagation();">
+                  <a href="/kos/${kos.slug}" class="btn btn-sm btn-coach-teal btn-pill px-3 py-1" style="font-size: 11px;" onclick="event.stopPropagation();">
                     Detail <i class="bi bi-chevron-right ms-1"></i>
                   </a>
                 </div>
@@ -393,7 +410,7 @@ const KosKu = {
   },
 
   highlightCard: function (kosId) {
-    document.querySelectorAll('.card-kosku').forEach(c => c.classList.remove('border-dark', 'shadow-md'));
+    document.querySelectorAll('.card-coach').forEach(c => c.classList.remove('border-dark', 'shadow-md'));
     const card = document.getElementById(`kos-card-${kosId}`);
     if (card) {
       card.classList.add('border-dark');
@@ -431,12 +448,12 @@ const KosKu = {
           if (res.geojson) {
             this.geojsonLayer = L.geoJSON(res.geojson, {
               style: {
-                color: '#18181b',
-                weight: 2,
-                opacity: 0.8,
+                color: '#0d9488',
+                weight: 2.5,
+                opacity: 0.9,
                 dashArray: '5, 5',
-                fillColor: '#18181b',
-                fillOpacity: 0.05
+                fillColor: '#0d9488',
+                fillOpacity: 0.08
               }
             }).addTo(this.map);
 

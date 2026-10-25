@@ -25,20 +25,40 @@ class Dashboard extends BaseController
         $totalFasilitas   = $fasilitasModel->countAllResults();
 
         $summaryStats     = $kunjunganModel->getSummaryStats();
+
         $recentKos        = $kosModel->select('kos.*, wilayah.nama as nama_wilayah')
                                      ->join('wilayah', 'wilayah.id = kos.wilayah_id', 'left')
+                                     ->orderBy('kos.is_unggulan', 'DESC')
                                      ->orderBy('kos.created_at', 'DESC')
-                                     ->limit(6)
+                                     ->limit(8)
                                      ->findAll();
 
         $totalKamar = 0;
         $kamarTersediaTotal = 0;
-        $allRooms = $kosModel->select('jumlah_kamar, kamar_tersedia')->findAll();
+        $totalPrice = 0;
+        $allRooms = $kosModel->select('jumlah_kamar, kamar_tersedia, harga_min')->findAll();
         foreach ($allRooms as $r) {
             $totalKamar += (int) $r['jumlah_kamar'];
             $kamarTersediaTotal += (int) $r['kamar_tersedia'];
+            $totalPrice += (float) $r['harga_min'];
         }
-        $occupancyRate = $totalKamar > 0 ? round((($totalKamar - $kamarTersediaTotal) / $totalKamar) * 100) : 0;
+
+        $kamarTerisiTotal = max(0, $totalKamar - $kamarTersediaTotal);
+        $occupancyRate    = $totalKamar > 0 ? round(($kamarTerisiTotal / $totalKamar) * 100) : 0;
+        $avgPrice         = count($allRooms) > 0 ? round($totalPrice / count($allRooms)) : 0;
+
+        $views = $summaryStats['total_views'] ?? 0;
+        $waClicks = $summaryStats['total_wa'] ?? 0;
+        $waConversionRate = $views > 0 ? round(($waClicks / $views) * 100, 1) : 0;
+
+        // Featured Kos for the top highlight card
+        $featuredKos = $kosModel->select('kos.*, wilayah.nama as nama_wilayah')
+                                ->join('wilayah', 'wilayah.id = kos.wilayah_id', 'left')
+                                ->where('kos.is_unggulan', true)
+                                ->first();
+        if (!$featuredKos && !empty($recentKos)) {
+            $featuredKos = $recentKos[0];
+        }
 
         $data = [
             'title'              => 'Admin Dashboard — kosKu',
@@ -50,9 +70,13 @@ class Dashboard extends BaseController
             'totalFasilitas'     => $totalFasilitas,
             'totalKamar'         => $totalKamar,
             'kamarTersediaTotal' => $kamarTersediaTotal,
+            'kamarTerisiTotal'   => $kamarTerisiTotal,
             'occupancyRate'      => $occupancyRate,
+            'avgPrice'           => $avgPrice,
+            'waConversionRate'   => $waConversionRate,
             'summaryStats'       => $summaryStats,
             'recentKos'          => $recentKos,
+            'featuredKos'        => $featuredKos,
         ];
 
         return view('admin/dashboard/index', $data);

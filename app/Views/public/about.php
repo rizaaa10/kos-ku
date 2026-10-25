@@ -8,7 +8,7 @@
       
       <!-- Header Banner -->
       <div class="text-center mb-5">
-        <span class="badge badge-kosku badge-kosku-dark px-3 py-2 text-uppercase mb-3">Tentang Platform</span>
+        <span class="badge badge-coach badge-coach-teal px-3 py-2 text-uppercase mb-3">Tentang Platform</span>
         <h1 class="fw-800 text-dark display-5 tracking-tight mb-3">
           Cari Kos, Langsung dari Peta.
         </h1>

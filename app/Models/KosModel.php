@@ -118,10 +118,8 @@ class KosModel extends Model
         $fasilitasModel = new KosFasilitasModel();
 
         foreach ($items as &$item) {
-            $item['foto_utama'] = $fotoModel->where('kos_id', $item['id'])
-                                             ->orderBy('is_utama', 'DESC')
-                                             ->orderBy('urutan', 'ASC')
-                                             ->first();
+            $fotos = $fotoModel->getByKosId((int) $item['id']);
+            $item['foto_utama'] = $fotos[0] ?? null;
             $item['fasilitas'] = $fasilitasModel->getFasilitasByKosId($item['id']);
         }
 

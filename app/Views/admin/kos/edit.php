@@ -2,17 +2,17 @@
 
 <?= $this->section('content') ?>
 
-<div class="card card-kosku p-4 mb-5">
-  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+<div class="card-coach mb-5">
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom" style="border-color: rgba(226, 232, 240, 0.7) !important;">
     <div>
       <h4 class="fw-800 text-dark mb-1">Ubah Data Kos: <?= esc($kos['nama']) ?></h4>
       <p class="text-muted small mb-0">Perbarui informasi, harga, ketersediaan kamar, dan koordinat spasial.</p>
     </div>
     <div class="d-flex gap-2">
-      <a href="<?= base_url('admin/kos/' . $kos['id'] . '/photos') ?>" class="btn btn-sm btn-kosku-dark btn-pill">
+      <a href="<?= base_url('admin/kos/' . $kos['id'] . '/photos') ?>" class="btn btn-sm btn-coach-teal btn-pill">
         <i class="bi bi-images me-1"></i> Kelola Foto Galeri
       </a>
-      <a href="<?= base_url('admin/kos') ?>" class="btn btn-sm btn-kosku-light btn-pill">
+      <a href="<?= base_url('admin/kos') ?>" class="btn btn-sm btn-coach-light btn-pill">
         <i class="bi bi-arrow-left me-1"></i> Kembali
       </a>
     </div>
@@ -64,7 +64,7 @@
             <label class="form-label small fw-bold text-dark text-uppercase mb-0">
               <i class="bi bi-geo-alt-fill text-danger me-1"></i> Titik Koordinat Peta (Geser Pin atau Klik)
             </label>
-            <span class="badge badge-kosku badge-kosku-dark" style="font-size: 10px;">Interaktif</span>
+            <span class="badge badge-coach badge-coach-teal" style="font-size: 10px;">Interaktif</span>
           </div>
 
           <div id="pickerMap" class="rounded-4 border mb-2" style="height: 280px; width: 100%;"></div>
@@ -181,7 +181,7 @@
 
         <!-- Submit Button -->
         <div class="d-grid gap-2">
-          <button type="submit" class="btn btn-kosku-dark btn-pill py-3 fw-bold fs-6">
+          <button type="submit" class="btn btn-coach-teal btn-pill py-3 fw-bold fs-6">
             <i class="bi bi-save me-1"></i> Perbarui Data Kos
           </button>
         </div>

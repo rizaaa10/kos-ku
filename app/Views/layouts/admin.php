@@ -16,161 +16,180 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <!-- Chart.js for Monochrome Analytics -->
+  <!-- Chart.js for Analytics -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
-  <!-- kosKu Custom Design CSS -->
+  <!-- kosKu Custom Design CSS (CoachPro Aesthetic) -->
   <link rel="stylesheet" href="<?= base_url('assets/css/kosku.css') ?>">
 
   <?= $this->renderSection('styles') ?>
 </head>
-<body class="bg-light">
+<body>
 
-  <div class="container-fluid p-3 p-lg-4">
-    <div class="d-flex gap-4">
-      
-      <!-- Rounded White Admin Sidebar -->
-      <aside class="admin-sidebar d-none d-lg-flex flex-shrink-0">
-        <!-- Logo -->
-        <div class="d-flex align-items-center gap-3 px-2 mb-4 pb-3 border-bottom">
-          <div class="btn-icon-circle-dark" style="width: 42px; height: 42px; border-radius: 14px !important;">
-            <i class="bi bi-geo-alt-fill text-white fs-4"></i>
-          </div>
-          <div>
-            <h5 class="fw-bold mb-0 text-dark">kosKu</h5>
-            <span class="badge badge-kosku badge-kosku-dark" style="font-size: 10px;">Admin Panel</span>
-          </div>
+  <!-- Outer Glass Canvas Window -->
+  <div class="app-window">
+
+    <!-- Left Integrated Sidebar -->
+    <aside class="app-sidebar d-none d-lg-flex">
+
+      <!-- Brand Logo -->
+      <a href="<?= base_url('admin/dashboard') ?>" class="app-brand">
+        <div class="brand-icon">
+          <i class="bi bi-geo-alt-fill"></i>
         </div>
-
-        <!-- Navigation Menu -->
-        <nav class="flex-grow-1">
-          <div class="small text-muted fw-bold text-uppercase px-3 mb-2" style="font-size: 11px; letter-spacing: 0.5px;">Menu Utama</div>
-          <a href="<?= base_url('admin/dashboard') ?>" class="admin-nav-item <?= (current_url() == base_url('admin') || current_url() == base_url('admin/dashboard')) ? 'active' : '' ?>">
-            <i class="bi bi-grid-1x2"></i>
-            <span>Dashboard</span>
-          </a>
-          <a href="<?= base_url('admin/kos') ?>" class="admin-nav-item <?= str_contains(current_url(), 'admin/kos') ? 'active' : '' ?>">
-            <i class="bi bi-houses"></i>
-            <span>Data Kos</span>
-          </a>
-          <a href="<?= base_url('admin/wilayah') ?>" class="admin-nav-item <?= str_contains(current_url(), 'admin/wilayah') ? 'active' : '' ?>">
-            <i class="bi bi-pin-map"></i>
-            <span>Wilayah (GIS)</span>
-          </a>
-          <a href="<?= base_url('admin/fasilitas') ?>" class="admin-nav-item <?= str_contains(current_url(), 'admin/fasilitas') ? 'active' : '' ?>">
-            <i class="bi bi-check2-all"></i>
-            <span>Master Fasilitas</span>
-          </a>
-          <a href="<?= base_url('admin/statistik') ?>" class="admin-nav-item <?= str_contains(current_url(), 'admin/statistik') ? 'active' : '' ?>">
-            <i class="bi bi-graph-up-arrow"></i>
-            <span>Statistik & Trafik</span>
-          </a>
-
-          <div class="small text-muted fw-bold text-uppercase px-3 mt-4 mb-2" style="font-size: 11px; letter-spacing: 0.5px;">Aksi Cepat</div>
-          <a href="<?= base_url('admin/kos/create') ?>" class="admin-nav-item">
-            <i class="bi bi-plus-circle"></i>
-            <span>Tambah Kos Baru</span>
-          </a>
-          <a href="<?= base_url('/') ?>" target="_blank" class="admin-nav-item">
-            <i class="bi bi-box-arrow-up-right"></i>
-            <span>Lihat Website Publik</span>
-          </a>
-        </nav>
-
-        <!-- User Profile Card -->
-        <div class="pt-3 border-top mt-auto">
-          <div class="d-flex align-items-center justify-content-between p-2 rounded-4 bg-light">
-            <div class="d-flex align-items-center gap-2">
-              <div class="btn-icon-circle-dark" style="width: 36px; height: 36px;">
-                <i class="bi bi-person text-white"></i>
-              </div>
-              <div class="overflow-hidden" style="max-width: 120px;">
-                <div class="fw-bold small text-truncate"><?= esc(session()->get('user_name') ?? 'Admin') ?></div>
-                <div class="text-muted" style="font-size: 10px;"><?= esc(session()->get('user_email') ?? 'admin@kosku.id') ?></div>
-              </div>
-            </div>
-            <a href="<?= base_url('admin/logout') ?>" class="btn btn-sm btn-icon-circle border-0 text-danger" title="Logout">
-              <i class="bi bi-box-arrow-right fs-5"></i>
-            </a>
-          </div>
+        <div>
+          <span class="brand-name">kosKu</span>
+          <span class="brand-badge">Pro</span>
         </div>
-      </aside>
+      </a>
 
-      <!-- Main Body Content -->
-      <div class="flex-grow-1 overflow-hidden">
-        
-        <!-- Top Admin Header -->
-        <header class="d-flex justify-content-between align-items-center mb-4">
-          <!-- Left Mobile Toggle & Title -->
-          <div class="d-flex align-items-center gap-3">
-            <div class="dropdown d-lg-none">
-              <button class="btn btn-icon-circle" type="button" data-bs-toggle="dropdown">
-                <i class="bi bi-list fs-4"></i>
-              </button>
-              <ul class="dropdown-menu rounded-4 shadow border-0 p-2">
-                <li><a class="dropdown-item rounded-pill py-2" href="<?= base_url('admin/dashboard') ?>"><i class="bi bi-grid-1x2 me-2"></i> Dashboard</a></li>
-                <li><a class="dropdown-item rounded-pill py-2" href="<?= base_url('admin/kos') ?>"><i class="bi bi-houses me-2"></i> Data Kos</a></li>
-                <li><a class="dropdown-item rounded-pill py-2" href="<?= base_url('admin/wilayah') ?>"><i class="bi bi-pin-map me-2"></i> Wilayah</a></li>
-                <li><a class="dropdown-item rounded-pill py-2" href="<?= base_url('admin/fasilitas') ?>"><i class="bi bi-check2-all me-2"></i> Fasilitas</a></li>
-                <li><a class="dropdown-item rounded-pill py-2" href="<?= base_url('admin/statistik') ?>"><i class="bi bi-graph-up-arrow me-2"></i> Statistik</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item rounded-pill py-2 text-danger" href="<?= base_url('admin/logout') ?>"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
-              </ul>
+      <!-- Navigation Links -->
+      <nav class="app-nav">
+        <div class="nav-section-title">Menu Utama</div>
+
+        <a href="<?= base_url('admin/dashboard') ?>" class="nav-link-coach <?= (current_url() == base_url('admin') || current_url() == base_url('admin/dashboard')) ? 'active' : '' ?>">
+          <i class="bi bi-grid-fill"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="<?= base_url('admin/kos') ?>" class="nav-link-coach <?= str_contains(current_url(), 'admin/kos') ? 'active' : '' ?>">
+          <i class="bi bi-houses-fill"></i>
+          <span>Data Kos</span>
+        </a>
+
+        <a href="<?= base_url('admin/wilayah') ?>" class="nav-link-coach <?= str_contains(current_url(), 'admin/wilayah') ? 'active' : '' ?>">
+          <i class="bi bi-pin-map-fill"></i>
+          <span>Wilayah GIS</span>
+        </a>
+
+        <a href="<?= base_url('admin/fasilitas') ?>" class="nav-link-coach <?= str_contains(current_url(), 'admin/fasilitas') ? 'active' : '' ?>">
+          <i class="bi bi-check2-circle"></i>
+          <span>Fasilitas</span>
+        </a>
+
+        <a href="<?= base_url('admin/statistik') ?>" class="nav-link-coach <?= str_contains(current_url(), 'admin/statistik') ? 'active' : '' ?>">
+          <i class="bi bi-graph-up-arrow"></i>
+          <span>Statistik</span>
+        </a>
+
+        <div class="nav-section-title">Aksi &amp; Publik</div>
+
+        <a href="<?= base_url('admin/kos/create') ?>" class="nav-link-coach">
+          <i class="bi bi-plus-circle-fill"></i>
+          <span>Tambah Kos</span>
+        </a>
+
+        <a href="<?= base_url('/') ?>" target="_blank" class="nav-link-coach">
+          <i class="bi bi-compass-fill"></i>
+          <span>Peta Publik</span>
+        </a>
+      </nav>
+
+      <!-- Bottom User Profile Item -->
+      <div class="pt-3 border-top mt-auto" style="border-color: rgba(226, 232, 240, 0.6) !important;">
+        <div class="d-flex align-items-center justify-content-between p-2 rounded-4" style="background: rgba(255, 255, 255, 0.7);">
+          <div class="d-flex align-items-center gap-2 overflow-hidden">
+            <div class="user-avatar" style="width: 32px; height: 32px; font-size: 0.8rem;">
+              <?= strtoupper(substr(session()->get('user_name') ?? 'A', 0, 1)) ?>
             </div>
-
-            <div>
-              <h2 class="fw-800 text-dark tracking-tight mb-0" style="font-weight: 800;">
-                Halo, <?= esc(session()->get('user_name') ?? 'Admin') ?> 👋
-              </h2>
-              <p class="text-muted small mb-0">Kelola informasi kos, pemetaan wilayah, dan foto dengan cepat.</p>
+            <div class="text-truncate" style="max-width: 110px;">
+              <div class="fw-bold small text-dark text-truncate"><?= esc(session()->get('user_name') ?? 'Admin') ?></div>
+              <div class="text-muted" style="font-size: 10px;">Administrator</div>
             </div>
           </div>
+          <a href="<?= base_url('admin/logout') ?>" class="topbar-btn text-danger" style="width: 32px; height: 32px;" title="Keluar">
+            <i class="bi bi-box-arrow-right fs-6"></i>
+          </a>
+        </div>
+      </div>
 
-          <!-- Right Buttons -->
-          <div class="d-flex align-items-center gap-2">
-            <a href="<?= base_url('/') ?>" target="_blank" class="btn btn-icon-circle" title="Lihat Website Publik">
-              <i class="bi bi-globe2"></i>
-            </a>
-            <a href="<?= base_url('admin/kos/create') ?>" class="btn btn-kosku-dark btn-pill">
-              <i class="bi bi-plus-lg"></i>
-              <span>Tambah Kos</span>
-            </a>
-          </div>
-        </header>
+    </aside>
 
-        <!-- Flash Messages -->
-        <?php if (session()->getFlashdata('success')): ?>
-          <div class="alert alert-dark border-0 rounded-4 shadow-sm mb-4 d-flex align-items-center gap-2" role="alert">
-            <i class="bi bi-check-circle-fill text-white fs-5"></i>
-            <div><?= session()->getFlashdata('success') ?></div>
-            <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert"></button>
-          </div>
-        <?php endif; ?>
+    <!-- Main Content Area -->
+    <main class="app-main">
 
-        <?php if (session()->getFlashdata('error')): ?>
-          <div class="alert alert-danger border-0 rounded-4 shadow-sm mb-4 d-flex align-items-center gap-2" role="alert">
-            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
-            <div><?= session()->getFlashdata('error') ?></div>
-            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-          </div>
-        <?php endif; ?>
+      <!-- Topbar Header -->
+      <header class="app-topbar">
 
-        <?php if (session()->getFlashdata('errors')): ?>
-          <div class="alert alert-danger border-0 rounded-4 shadow-sm mb-4" role="alert">
-            <div class="fw-bold mb-1"><i class="bi bi-exclamation-octagon-fill me-1"></i> Terdapat kesalahan pengisian data:</div>
-            <ul class="mb-0 ps-3">
-              <?php foreach (session()->getFlashdata('errors') as $err): ?>
-                <li><?= esc($err) ?></li>
-              <?php endforeach; ?>
+        <!-- Left: Mobile Menu & Titles -->
+        <div class="d-flex align-items-center gap-3">
+          <div class="dropdown d-lg-none">
+            <button class="topbar-btn" type="button" data-bs-toggle="dropdown">
+              <i class="bi bi-list fs-5"></i>
+            </button>
+            <ul class="dropdown-menu shadow-lg border-0 rounded-4 p-2" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px);">
+              <li><a class="dropdown-item rounded-pill py-2" href="<?= base_url('admin/dashboard') ?>"><i class="bi bi-grid-fill me-2 text-teal"></i> Dashboard</a></li>
+              <li><a class="dropdown-item rounded-pill py-2" href="<?= base_url('admin/kos') ?>"><i class="bi bi-houses-fill me-2"></i> Data Kos</a></li>
+              <li><a class="dropdown-item rounded-pill py-2" href="<?= base_url('admin/wilayah') ?>"><i class="bi bi-pin-map-fill me-2"></i> Wilayah GIS</a></li>
+              <li><a class="dropdown-item rounded-pill py-2" href="<?= base_url('admin/fasilitas') ?>"><i class="bi bi-check2-circle me-2"></i> Fasilitas</a></li>
+              <li><a class="dropdown-item rounded-pill py-2" href="<?= base_url('admin/statistik') ?>"><i class="bi bi-graph-up-arrow me-2"></i> Statistik</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item rounded-pill py-2 text-danger" href="<?= base_url('admin/logout') ?>"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
             </ul>
           </div>
-        <?php endif; ?>
 
-        <!-- Content Section -->
-        <?= $this->renderSection('content') ?>
+          <div>
+            <div class="topbar-welcome">Welcome back, <?= esc(session()->get('user_name') ?? 'Admin') ?> ☀️</div>
+            <h1 class="topbar-title"><?= esc($headerTitle ?? 'Dashboard') ?></h1>
+          </div>
+        </div>
 
-      </div>
-    </div>
+        <!-- Right: Actions & Profile -->
+        <div class="topbar-actions">
+          <a href="<?= base_url('/') ?>" target="_blank" class="topbar-btn" title="Cari di Peta Publik">
+            <i class="bi bi-search"></i>
+          </a>
+
+          <div class="topbar-btn" title="Notifikasi Sistem">
+            <i class="bi bi-bell"></i>
+            <span class="notification-dot"></span>
+          </div>
+
+          <div class="topbar-user d-none d-sm-flex">
+            <div class="user-avatar">
+              <?= strtoupper(substr(session()->get('user_name') ?? 'A', 0, 1)) ?>
+            </div>
+            <div class="user-name">
+              <?= esc(session()->get('user_name') ?? 'Admin') ?>
+            </div>
+          </div>
+        </div>
+
+      </header>
+
+      <!-- Alert Flash Messages -->
+      <?php if (session()->getFlashdata('success')): ?>
+        <div class="alert border-0 rounded-4 shadow-sm mb-4 d-flex align-items-center gap-2" style="background: #ccfbf1; color: #0f766e;" role="alert">
+          <i class="bi bi-check-circle-fill fs-5"></i>
+          <div class="fw-semibold small"><?= esc(session()->getFlashdata('success')) ?></div>
+          <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+        </div>
+      <?php endif; ?>
+
+      <?php if (session()->getFlashdata('error')): ?>
+        <div class="alert border-0 rounded-4 shadow-sm mb-4 d-flex align-items-center gap-2" style="background: #fee2e2; color: #b91c1c;" role="alert">
+          <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+          <div class="fw-semibold small"><?= esc(session()->getFlashdata('error')) ?></div>
+          <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+        </div>
+      <?php endif; ?>
+
+      <?php if (session()->getFlashdata('errors')): ?>
+        <div class="alert border-0 rounded-4 shadow-sm mb-4" style="background: #fee2e2; color: #b91c1c;" role="alert">
+          <div class="fw-bold mb-1 small"><i class="bi bi-exclamation-octagon-fill me-1"></i> Terjadi kesalahan validasi:</div>
+          <ul class="mb-0 ps-3 small">
+            <?php foreach (session()->getFlashdata('errors') as $err): ?>
+              <li><?= esc($err) ?></li>
+            <?php endforeach; ?>
+          </ul>
+        </div>
+      <?php endif; ?>
+
+      <!-- Dynamic Page Content -->
+      <?= $this->renderSection('content') ?>
+
+    </main>
+
   </div>
 
   <!-- Bootstrap 5.3 Bundle JS -->

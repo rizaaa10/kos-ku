@@ -53,7 +53,7 @@ class Kos extends BaseController
         $kosList = $builder->orderBy('kos.created_at', 'DESC')->findAll();
 
         foreach ($kosList as &$k) {
-            $k['foto_utama'] = $this->kosFotoModel->where('kos_id', $k['id'])->orderBy('is_utama', 'DESC')->first();
+            $k['foto_utama'] = $this->kosFotoModel->getByKosId((int) $k['id'])[0] ?? null;
         }
 
         $data = [
@@ -99,6 +99,52 @@ class Kos extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
+        $photos = $this->request->getFileMultiple('foto') ?? [];
+        $photosToUpload = [];
+        $allowedPhotoTypes = ['image/jpeg', 'image/png', 'image/webp'];
+
+        foreach ($photos as $photo) {
+            if ($photo->getError() === UPLOAD_ERR_NO_FILE) {
+                continue;
+            }
+
+            if (!$photo->isValid()) {
+                return redirect()->back()->withInput()->with('error', 'Unggahan foto gagal. Silakan pilih ulang file foto.');
+            }
+
+            if ($photo->getSize() > 5 * 1024 * 1024 || !in_array($photo->getMimeType(), $allowedPhotoTypes, true)) {
+                return redirect()->back()->withInput()->with('error', 'Foto harus berformat JPG, PNG, atau WEBP dan berukuran maksimal 5 MB per file.');
+            }
+
+            $photosToUpload[] = $photo;
+        }
+
+        if (count($photosToUpload) > 10) {
+            return redirect()->back()->withInput()->with('error', 'Maksimal 10 foto dapat diunggah sekaligus.');
+        }
+
+        $uploadPath = FCPATH . 'uploads' . DIRECTORY_SEPARATOR . 'kos';
+        if (!is_dir($uploadPath) && !mkdir($uploadPath, 0775, true) && !is_dir($uploadPath)) {
+            return redirect()->back()->withInput()->with('error', 'Folder penyimpanan foto tidak dapat disiapkan.');
+        }
+
+        $uploadedPhotos = [];
+        foreach ($photosToUpload as $photo) {
+            $newName = $photo->getRandomName();
+            if (!$photo->move($uploadPath, $newName)) {
+                foreach ($uploadedPhotos as $uploadedPhoto) {
+                    unlink($uploadedPhoto['full_path']);
+                }
+
+                return redirect()->back()->withInput()->with('error', 'Foto gagal disimpan. Silakan coba lagi.');
+            }
+
+            $uploadedPhotos[] = [
+                'path_file' => 'uploads/kos/' . $newName,
+                'full_path' => $uploadPath . DIRECTORY_SEPARATOR . $newName,
+            ];
+        }
+
         $nama = trim((string) $this->request->getPost('nama'));
         $slug = $this->kosModel->generateSlug($nama);
 
@@ -125,6 +171,13 @@ class Kos extends BaseController
         ];
 
         $kosId = $this->kosModel->insert($dataInsert);
+        if (!$kosId) {
+            foreach ($uploadedPhotos as $uploadedPhoto) {
+                unlink($uploadedPhoto['full_path']);
+            }
+
+            return redirect()->back()->withInput()->with('error', 'Data kos gagal disimpan. Silakan periksa kembali data Anda.');
+        }
 
         // Save Facilities
         $fasilitas = $this->request->getPost('fasilitas');
@@ -137,36 +190,13 @@ class Kos extends BaseController
             }
         }
 
-        // Handle Photo Uploads
-        $photos = $this->request->getFileMultiple('foto');
-        $uploadedCount = 0;
-        if ($photos) {
-            foreach ($photos as $idx => $photo) {
-                if ($photo->isValid() && !$photo->hasMoved()) {
-                    $newName = $photo->getRandomName();
-                    $photo->move(FCPATH . 'uploads/kos', $newName);
-
-                    $this->kosFotoModel->insert([
-                        'kos_id'     => $kosId,
-                        'path_file'  => 'uploads/kos/' . $newName,
-                        'keterangan' => 'Foto Kos',
-                        'is_utama'   => ($uploadedCount === 0),
-                        'urutan'     => $uploadedCount,
-                        'created_at' => date('Y-m-d H:i:s'),
-                    ]);
-                    $uploadedCount++;
-                }
-            }
-        }
-
-        // If no photo was uploaded, attach default sample photo
-        if ($uploadedCount === 0) {
+        foreach ($uploadedPhotos as $idx => $uploadedPhoto) {
             $this->kosFotoModel->insert([
                 'kos_id'     => $kosId,
-                'path_file'  => 'uploads/kos/sample_kos_1.svg',
-                'keterangan' => 'Foto Standar',
-                'is_utama'   => true,
-                'urutan'     => 0,
+                'path_file'  => $uploadedPhoto['path_file'],
+                'keterangan' => 'Foto Kos',
+                'is_utama'   => ($idx === 0),
+                'urutan'     => $idx,
                 'created_at' => date('Y-m-d H:i:s'),
             ]);
         }
@@ -327,7 +357,12 @@ class Kos extends BaseController
         $uploadedCount = 0;
 
         if ($photos) {
-            $hasExistingPhotos = $this->kosFotoModel->where('kos_id', $id)->countAllResults() > 0;
+            $this->kosFotoModel->where('kos_id', $id)->whereIn('path_file', [
+                'uploads/kos/sample_kos_1.svg',
+                'uploads/kos/sample_kos_2.svg',
+                'uploads/kos/sample_kos_3.svg',
+            ])->delete();
+            $hasExistingPhotos = !empty($this->kosFotoModel->getByKosId($id));
 
             foreach ($photos as $photo) {
                 if ($photo->isValid() && !$photo->hasMoved()) {

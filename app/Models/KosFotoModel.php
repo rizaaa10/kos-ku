@@ -19,6 +19,11 @@ class KosFotoModel extends Model
     public function getByKosId(int $kosId)
     {
         return $this->where('kos_id', $kosId)
+                    ->whereNotIn('path_file', [
+                        'uploads/kos/sample_kos_1.svg',
+                        'uploads/kos/sample_kos_2.svg',
+                        'uploads/kos/sample_kos_3.svg',
+                    ])
                     ->orderBy('is_utama', 'DESC')
                     ->orderBy('urutan', 'ASC')
                     ->orderBy('id', 'ASC')

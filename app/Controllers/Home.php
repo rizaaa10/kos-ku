@@ -93,7 +93,7 @@ class Home extends BaseController
 
         $fotoModel = new \App\Models\KosFotoModel();
         foreach ($relatedKos as &$r) {
-            $r['foto_utama'] = $fotoModel->where('kos_id', $r['id'])->orderBy('is_utama', 'DESC')->first();
+            $r['foto_utama'] = $fotoModel->getByKosId((int) $r['id'])[0] ?? null;
         }
 
         $data = [

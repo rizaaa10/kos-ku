@@ -71,14 +71,16 @@
 
           let html = `<div class="row g-4">`;
           favKos.forEach(k => {
-            const thumb = k.foto_utama ? `/${k.foto_utama.path_file}` : '/uploads/kos/sample_kos_1.svg';
+            const photo = k.foto_utama
+              ? `<img src="/${k.foto_utama.path_file}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="${k.nama}">`
+              : `<div class="bg-light d-flex align-items-center justify-content-center text-muted" style="height: 200px;"><i class="bi bi-image fs-1" aria-label="Foto kos belum tersedia"></i></div>`;
             const price = 'Rp ' + Number(k.harga_min).toLocaleString('id-ID');
 
             html += `
               <div class="col-12 col-md-6 col-lg-4" id="fav-card-${k.id}">
                 <div class="card card-kosku h-100 overflow-hidden">
                   <div class="position-relative">
-                    <img src="${thumb}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="${k.nama}">
+                    ${photo}
                     <span class="position-absolute top-0 start-0 m-3 badge badge-kosku badge-kosku-dark text-capitalize">Kos ${k.tipe}</span>
                     <button class="position-absolute top-0 end-0 m-3 btn btn-icon-circle bg-white shadow-sm" onclick="removeFavorite(${k.id})">
                       <i class="bi bi-heart-fill text-danger fs-6"></i>
